@@ -1,0 +1,36 @@
+{% extends 'commerce/base/base.html' %}
+{% load static %}
+
+{% block customer_info_content %}
+<div class="container mt-5">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">Customer Information</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <!-- Left Section: Customer Details -->
+                <div class="col-md-6">
+                    <h4 class="text-primary">{{ customer.full_name }}</h4>
+                    <p><strong>Email:</strong> {{ customer.email }}</p>
+                    <p><strong>Phone Number:</strong> {{ customer.phone_number }}</p>
+                    <p><strong>Address:</strong> {{ customer.address }}</p>
+                </div>
+
+                <!-- Right Section: Additional Details -->
+                <div class="col-md-6">
+                    <p><strong>VAT Number:</strong> {{ customer.vat_number }}</p>
+                    <p><strong>Invoice Prefix:</strong> {{ customer.invoice_prefix }}</p>
+                    <p><strong>Invoice Number:</strong> {{ customer.invoice_number }}</p>
+                    <p><strong>Description:</strong> {{ customer.description }}</p>
+                    <p><strong>Send Emails To:</strong> {{ customer.send_email_to }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-end">
+            <a href="{% url 'edit_customer' customer.id %}" class="btn btn-warning">Edit</a>
+            <a href="{% url 'customer_details' customer.id %}" class="btn btn-secondary">Back</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

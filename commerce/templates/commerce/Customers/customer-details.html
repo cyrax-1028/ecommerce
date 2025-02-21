@@ -1,0 +1,145 @@
+{% extends 'commerce/base/base.html' %}
+{% load static %}
+
+{% block customer_detail_content %}
+
+    <div class="card mb-3">
+        <div class="card-header">
+            <div class="row">
+                <div class="col">
+                    <h5 class="mb-2">{{ customer.full_name }} (<a
+                            href="mailto:{{ customer.email }}">{{ customer.email }}</a>)</h5><a
+                        class="btn btn-falcon-default btn-sm" href="{% url 'customer_info' customer.id %}">
+                    <span class="fas fa-eye fs--2 me-1"></span> View Info
+                </a>
+
+                    <button class="btn btn-falcon-default btn-sm dropdown-toggle ms-2 dropdown-caret-none" type="button"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span
+                            class="fas fa-ellipsis-h"></span></button>
+                    <div class="dropdown-menu">
+                        {% if user.is_authenticated %}
+                            <a class="dropdown-item" href="{% url 'edit_customer' customer.id %}">Edit</a>
+                        {% endif %}
+                        <a class="dropdown-item" href="{% url 'about' %}">Report</a>
+                        {% if user.is_authenticated %}
+                            <div class="dropdown-divider"></div>
+                            <form method="POST" action="{% url 'delete_customer' customer.id %}"
+                                  onsubmit="return confirmDelete()">
+                                {% csrf_token %}
+                                <button type="submit" class="dropdown-item text-danger">Delete user</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+                <script>
+                    function confirmDelete() {
+                        return confirm("Siz haqiqatdan ham ushbu foydalanuvchini o‘chirib tashlamoqchimisiz?");
+                    }
+                </script>
+                <div class="col-auto d-none d-sm-block">
+                    <h6 class="text-uppercase text-600"><a
+                            href="{% url 'customer_details' customer.id %}">Customer<span
+                            class="fas fa-user ms-2"></span></a></h6>
+                </div>
+            </div>
+        </div>
+        <div class="card-body border-top">
+            <div class="d-flex"><span class="fas fa-user text-success me-2" data-fa-transform="down-5"></span>
+                <div class="flex-1">
+                    <p class="mb-0">Customer was created</p>
+                    <p class="fs--1 mb-0 text-600">{{ created_date }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card mb-3">
+        <div class="card-header">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h5 class="mb-0"><a href="{% url 'customer_details' customer.id %}">Details</a></h5>
+                </div>
+                {% if user.is_authenticated %}
+                    <div class="col-auto"><a class="btn btn-falcon-default btn-sm"
+                                             href="{% url 'edit_customer' customer.id %}"><span
+                            class="fas fa-pencil-alt fs--2 me-1"></span>Update details</a></div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="card-body bg-light border-top">
+            <div class="row">
+                <div class="col-lg col-xxl-5">
+                    <h6 class="fw-semi-bold ls mb-3 text-uppercase">Account Information</h6>
+                    <div class="row">
+                        <div class="col-5 col-sm-4">
+                            <p class="fw-semi-bold mb-1">ID</p>
+                        </div>
+                        <div class="col">{{ customer.id }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-5 col-sm-4">
+                            <p class="fw-semi-bold mb-1">Created</p>
+                        </div>
+                        <div class="col">{{ customer.created_at|date:"Y/m/d H:i" }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-5 col-sm-4">
+                            <p class="fw-semi-bold mb-1">Email</p>
+                        </div>
+                        <div class="col"><a href="mailto:{{ customer.email }}">{{ customer.email }}</a></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-5 col-sm-4">
+                            <p class="fw-semi-bold mb-1">Description</p>
+                        </div>
+                        <div class="col">
+                            <p class="fst-italic text-400 mb-1">{{ customer.description }}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-5 col-sm-4">
+                            <p class="fw-semi-bold mb-0">VAT number</p>
+                        </div>
+                        <div class="col">
+                            <p class="fst-italic text-400 mb-0">{{ customer.vat_number }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg col-xxl-5 mt-4 mt-lg-0 offset-xxl-1">
+                    <h6 class="fw-semi-bold ls mb-3 text-uppercase">Billing Information</h6>
+                    <div class="row">
+                        <div class="col-5 col-sm-4">
+                            <p class="fw-semi-bold mb-1">Send email to</p>
+                        </div>
+                        <div class="col"><a href="mailto:{{ customer.email }}">{{ customer.email }}</a></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-5 col-sm-4">
+                            <p class="fw-semi-bold mb-1">Address</p>
+                        </div>
+                        <div class="col">
+                            <p class="mb-1">{{ customer.address }}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-5 col-sm-4">
+                            <p class="fw-semi-bold mb-1">Phone number</p>
+                        </div>
+                        <div class="col"><a href="tel:{{ customer.phone_number }}">{{ customer.phone_number }}</a></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-5 col-sm-4">
+                            <p class="fw-semi-bold mb-0">Invoice prefix</p>
+                        </div>
+                        <div class="col">
+                            <p class="fw-semi-bold mb-0">{{ customer.generate_invoice_id }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-light p-0"><a class="btn btn-link d-block w-100" href="{% url 'about' %}">View more
+            logs<span
+                    class="fas fa-chevron-right fs--2 ms-1"></span></a></div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'commerce/base/base.html' %}
+
+{% block add_order_content %}
+<div class="container mt-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">🛒 Add New Order</h4>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                {% csrf_token %}
+
+                <!-- Customer tanlash -->
+                <div class="mb-3">
+                    <label for="customer" class="form-label">👤 Customer</label>
+                    <select id="customer" name="customer" class="form-select" required>
+                        <option value="" disabled selected>-- Select Customer --</option>
+                        {% for customer in customers %}
+                        <option value="{{ customer.id }}">{{ customer.full_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Mahsulot tanlash -->
+                <div class="mb-3">
+                    <label for="product" class="form-label">📦 Product</label>
+                    <select id="product" name="product" class="form-select" required>
+                        <option value="" disabled selected>-- Select Product --</option>
+                        {% for product in products %}
+                        <option value="{{ product.id }}">{{ product.name }} (${{ product.discounted_price }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Miqdor -->
+                <div class="mb-3">
+                    <label for="quantity" class="form-label">🔢 Quantity</label>
+                    <input type="number" id="quantity" name="quantity" class="form-control" min="1" value="1" required>
+                </div>
+
+                <!-- Status -->
+                <div class="mb-3">
+                    <label for="status" class="form-label">📌 Status</label>
+                    <select id="status" name="status" class="form-select">
+                        <option value="Pending">Pending</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                </div>
+
+                <!-- Tugmalar -->
+                <div class="text-end">
+                    <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Save Order</button>
+                    <a href="{% url 'order_list' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

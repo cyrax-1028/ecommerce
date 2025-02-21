@@ -1,0 +1,47 @@
+{% extends 'commerce/base/base.html' %}
+{% load static %}
+
+{% block order_product_content %}
+    <div class="container mt-4">
+        <h2>Place an Order</h2>
+        <div class="card">
+            <div class="card-body">
+                <h4>{{ product.name }}</h4>
+                <p><strong>Price:</strong> ${{ product.discounted_price }}</p>
+                <p><strong>In Stock:</strong> {{ product.quantity }} pcs</p>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                {% if product.quantity > 0 %}
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <!-- Customer selection dropdown -->
+                        <label for="customer">Select a Customer:</label>
+                        <select name="customer" id="customer" class="form-control mb-3" required>
+                            <option value="" disabled selected>Select...</option>
+                            {% for customer in customers %}
+                                <option value="{{ customer.id }}">{{ customer.full_name }} ({{ customer.email }})
+                                </option>
+                            {% endfor %}
+                        </select>
+
+                        <!-- Quantity selection -->
+                        <label for="quantity">Quantity:</label>
+                        <input type="number" name="quantity" id="quantity" min="1" max="{{ product.quantity }}"
+                               value="1" class="form-control mb-3" required>
+
+                        <button type="submit" class="btn btn-success">Place Order</button>
+                        <a href="{% url 'product_list' %}" class="btn btn-secondary">Back</a>
+                    </form>
+                {% else %}
+                    <div class="alert alert-danger mt-3">This product is out of stock!</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

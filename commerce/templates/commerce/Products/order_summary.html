@@ -1,0 +1,12 @@
+{% extends 'commerce/base/base.html' %}
+{% block order_summary_content %}
+<div class="container mt-4">
+    <h2>Your Order</h2>
+    <div class="card">
+        <div class="card-body">
+            <p>Your order has been received! We will deliver it soon.</p>
+            <a href="{% url 'product_list' %}" class="btn btn-primary">Back to Products</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

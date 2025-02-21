@@ -1,0 +1,50 @@
+{% extends 'commerce/base/base.html' %}
+
+{% block edit_customer_content %}
+<div class="container mt-5">
+    <h2>Edit Customer</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <!-- Full Name Field -->
+        <div class="mb-3">
+            <label for="full_name" class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="full_name" name="full_name" value="{{ form.full_name.value }}">
+        </div>
+
+        <!-- Email Field -->
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email" value="{{ form.email.value }}">
+        </div>
+
+        <!-- Description Field -->
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" name="description">{{ form.description.value }}</textarea>
+        </div>
+
+        <!-- VAT Number Field -->
+        <div class="mb-3">
+            <label for="vat_number" class="form-label">VAT Number</label>
+            <input type="text" class="form-control" id="vat_number" name="vat_number" value="{{ form.vat_number.value }}">
+        </div>
+
+        <!-- Address Field -->
+        <div class="mb-3">
+            <label for="address" class="form-label">Address</label>
+            <textarea class="form-control" id="address" name="address">{{ form.address.value }}</textarea>
+        </div>
+
+        <!-- Phone Number Field -->
+        <div class="mb-3">
+            <label for="phone_number" class="form-label">Phone Number</label>
+            <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ form.phone_number.value }}">
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+</div>
+{% endblock %}
