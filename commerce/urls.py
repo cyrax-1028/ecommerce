@@ -26,6 +26,7 @@ urlpatterns = [
     path('add_order/', views.add_order, name='add_order'),
     path('order/<int:order_id>/delete/', views.delete_order, name='delete_order'),
     path('register/', views.register, name='register'),
+    path("confirm-email/<str:token>/", views.confirm_email, name="confirm_email"),
     path('login/', views.user_login, name='login'),
     path('logout/', views.user_logout, name='logout'),
 ]
