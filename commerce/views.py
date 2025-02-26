@@ -49,8 +49,8 @@ def product_list(request):
     return render(request, 'commerce/Products/product-list.html', context=context)
 
 
-def product_details(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
+def product_details(request, slug):
+    product = get_object_or_404(Product, slug=slug)
     comments = Comment.objects.filter(product=product, is_negative=False)
     formatted_date = product.created_at.strftime("%B %d, %Y")
 

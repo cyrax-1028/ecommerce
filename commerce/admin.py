@@ -60,6 +60,7 @@ class ProductAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_filter = ['category', 'quantity', 'rating']
     autocomplete_fields = ['category']
     inlines = [ProductImageInline, ProductAttributeInline]
+    prepopulated_fields = {'slug': ('name',)}
 
 class ProductInline(admin.TabularInline):
     model = Product
@@ -68,6 +69,7 @@ class ProductInline(admin.TabularInline):
 class CategoryAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('title', 'created_at', 'product_count')
     search_fields = ('title',)
+    prepopulated_fields = {'slug': ('title',)}
 
     inlines = [
         ProductInline,

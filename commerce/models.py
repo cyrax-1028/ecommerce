@@ -12,6 +12,7 @@ from django.template.defaulttags import comment
 from django.utils.timezone import now
 from phonenumber_field.modelfields import PhoneNumberField
 from django.contrib.auth.models import User
+from django.template.defaultfilters import slugify
 
 
 # Create your models here.
@@ -26,6 +27,12 @@ class BaseModel(models.Model):
 
 class Category(BaseModel):
     title = models.CharField(max_length=100, unique=True)
+    slug = models.SlugField(null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+            super(Category, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.title
@@ -43,7 +50,9 @@ class Product(BaseModel):
         FOUR = 4
         FIVE = 5
 
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
+    slug = models.SlugField(null=True, blank=True)
+    category = models.ForeignKey("Category", on_delete=models.SET_NULL, related_name="products", null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     rating = models.PositiveIntegerField(choices=RatingChoice.choices, default=RatingChoice.ONE)
     price = models.DecimalField(max_digits=14, decimal_places=2)
@@ -53,7 +62,6 @@ class Product(BaseModel):
     shipping_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     model = models.CharField(max_length=255, null=True, blank=True)
     tags = models.CharField(max_length=255, null=True, blank=True)
-    category = models.ForeignKey("Category", on_delete=models.SET_NULL, related_name="products", null=True, blank=True)
 
     @property
     def discounted_price(self):
@@ -71,7 +79,9 @@ class Product(BaseModel):
         return (now() - self.created_at).total_seconds() < 86400
 
     def save(self, *args, **kwargs):
-        self.stock = "Available" if (self.quantity or 0) > 0 else "Sold Out"
+        if not self.slug:
+            self.slug = slugify(self.name)
+        self.stock = "Available" if self.quantity > 0 else "Sold Out"
         super().save(*args, **kwargs)
 
     def __str__(self):

@@ -4,7 +4,7 @@ from commerce import views
 
 urlpatterns = [
     path('', views.product_list, name='product_list'),
-    path('detail/<int:product_id>/', views.product_details, name='product_details'),
+    path('detail/<slug:slug>/', views.product_details, name='product_details'),
     path('product_grid/', views.product_grid, name='product_grid'),
     path('add_product/', views.add_product, name='add_product'),
     path('edit_product/<int:pk>/', views.edit_product, name='edit_product'),
