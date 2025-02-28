@@ -1,7 +1,10 @@
+import csv
+import json
+import pandas as pd
 from lib2to3.fixes.fix_input import context
 from django.conf import settings
 from django.core.paginator import Paginator
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -373,47 +376,6 @@ def about_alibaba(request):
 
 
 # //////////////////// A U T H E N T I C A T I O N ////////////////////////
-# def register(request):
-#     if request.method == "POST":
-#         username = request.POST["username"]
-#         email = request.POST["email"]
-#         password1 = request.POST["password1"]
-#         password2 = request.POST["password2"]
-#
-#         if password1 != password2:
-#             messages.error(request, "Parollar mos kelmadi!")
-#             return redirect("register")
-#
-#         if User.objects.filter(username=username).exists():
-#             messages.error(request, "Bu foydalanuvchi nomi allaqachon mavjud!")
-#             return redirect("register")
-#
-#         if User.objects.filter(email=email).exists():
-#             messages.error(request, "Bu email allaqachon ro‘yxatdan o‘tgan!")
-#             return redirect("register")
-#
-#         user = User.objects.create_user(username=username, email=email, password=password1)
-#         user.save()
-#
-#         send_mail(
-#             "Ro‘yxatdan o‘tish muvaffaqiyatli!",
-#             f"Hurmatli {username}, siz Alibaba.com onlayn do'konidan muvaffaqiyatli ro‘yxatdan o‘tdingiz!",
-#             settings.EMAIL_HOST_USER,
-#             [email],
-#             fail_silently=False,
-#         )
-#
-#         new_user = authenticate(request, username=username, password=password1)
-#         if new_user:
-#             login(request, new_user)
-#             return redirect("product_list")
-#
-#         messages.success(request, "Ro‘yxatdan o‘tish muvaffaqiyatli yakunlandi!")
-#         return redirect("login")
-#
-#     return render(request, "commerce/Authentication/register.html")
-
-
 def register(request):
     if request.method == "POST":
         email = request.POST["email"]
@@ -506,3 +468,67 @@ def user_logout(request):
         )
     logout(request)
     return redirect("product_list")
+
+# //////////////////// E X P O R T ////////////////////////
+def export_page(request):
+    models = {
+        'Category': Category,
+        'Product': Product,
+        'Customer': Customer,
+        'Order': Order,
+        'OrderItem': OrderItem,
+    }
+    return render(request, 'commerce/export.html', {'models': models})
+
+def to_string(value):
+    if value is None:
+        return ""
+    return str(value)
+
+def export_data(request):
+    model_name = request.GET.get('model')
+    format_type = request.GET.get('format')
+
+    models = {
+        'Category': Category,
+        'Product': Product,
+        'Customer': Customer,
+        'Order': Order,
+        'OrderItem': OrderItem,
+    }
+
+    if model_name not in models:
+        return HttpResponse("Model topilmadi", status=400)
+
+    model = models[model_name]
+    queryset = model.objects.all().values()
+
+    formatted_data = []
+    for row in queryset:
+        formatted_row = {key: to_string(value) for key, value in row.items()}
+        formatted_data.append(formatted_row)
+
+    if format_type == "csv":
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename="{model_name}.csv"'
+        writer = csv.writer(response)
+        writer.writerow(formatted_data[0].keys())
+        for row in formatted_data:
+            writer.writerow(row.values())
+        return response
+
+    elif format_type == "json":
+        response = HttpResponse(content_type='application/json')
+        response['Content-Disposition'] = f'attachment; filename="{model_name}.json"'
+        response.write(json.dumps(formatted_data, indent=4))
+        return response
+
+    elif format_type == "xlsx":
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = f'attachment; filename="{model_name}.xlsx"'
+        df = pd.DataFrame(formatted_data)
+        df.to_excel(response, index=False)
+        return response
+
+    else:
+        return HttpResponse("Noto‘g‘ri format", status=400)

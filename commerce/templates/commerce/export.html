@@ -1,0 +1,31 @@
+{% extends "commerce/base/base.html" %}
+{% block export_content %}
+<div class="container mt-4">
+    <h2>Ma'lumotlarni eksport qilish</h2>
+
+    <form action="{% url 'export_data' %}" method="get">
+        <div class="mb-3">
+            <label for="model" class="form-label">Modelni tanlang:</label>
+            <select class="form-select" id="model" name="model" required>
+                <option value="" selected disabled>Modelni tanlang</option>
+                {% for model_name in models.keys %}
+                    <option value="{{ model_name }}">{{ model_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="format" class="form-label">Formatni tanlang:</label>
+            <select class="form-select" id="format" name="format" required>
+                <option value="csv">CSV</option>
+                <option value="json">JSON</option>
+                <option value="xlsx">Excel (XLSX)</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-success">
+            <span class="fas fa-download"></span> Eksport qilish
+        </button>
+    </form>
+</div>
+{% endblock %}

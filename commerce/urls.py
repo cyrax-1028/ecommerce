@@ -29,4 +29,6 @@ urlpatterns = [
     path("confirm-email/<str:token>/", views.confirm_email, name="confirm_email"),
     path('login/', views.user_login, name='login'),
     path('logout/', views.user_logout, name='logout'),
+    path('export/', views.export_page, name='export_page'),
+    path('export/download/', views.export_data, name='export_data')
 ]

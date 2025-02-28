@@ -2058,6 +2058,10 @@
                             <input class="form-check-input ms-0 theme-control-toggle-input" id="themeControlToggle"
                                    type="checkbox" data-theme-control="theme" value="dark"/>
                             <img src="{% static 'images/GitHub.png' %}" alt="QR Code" width="30" height="30">
+                            <a href="{% url 'export_page' %}" class="btn btn-falcon-default btn-sm ms-3">
+                                <span class="fas fa-file-csv" data-fa-transform="shrink-3 down-2"></span>
+                                <span class="d-none d-sm-inline-block ms-1">Export</span>
+                            </a>
                             <label class="mb-0 theme-control-toggle-label theme-control-toggle-light"
                                    for="themeControlToggle" data-bs-toggle="tooltip" data-bs-placement="left"
                                    title="Switch to light theme"><span class="fas fa-sun fs-0"></span></label>
@@ -2292,6 +2296,9 @@
             {% endblock %}
 
             {% block customer_info_content %}
+            {% endblock %}
+
+            {% block export_content %}
             {% endblock %}
             <footer class="footer">
                 <div class="row g-0 justify-content-between fs--1 mt-4 mb-3">
