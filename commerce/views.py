@@ -64,7 +64,6 @@ def product_details(request, slug):
     }
     return render(request, 'commerce/Products/product-details.html', context)
 
-
 def product_grid(request):
     search_query = request.GET.get('q', '')
     filter_type = request.GET.get('filter', '')
